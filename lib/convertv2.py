@@ -23,6 +23,18 @@ def convert_template_v2_to_v3(template, template_id):
         "image": template.get("image", "")
     }
 
+    if "name" in template:
+        new_template["name"] = template["name"]
+
+    if "maintainer" in template:
+        new_template["maintainer"] = template["maintainer"]
+
+    if "repository" in template:
+        new_template["repository"] = template["repository"]
+
+    if "env" in template:
+        new_template["env"] = template["env"]
+
     if "ports" in template:
         new_template["ports"] = template["ports"]
 
@@ -33,6 +45,17 @@ def convert_template_v2_to_v3(template, template_id):
                 **({"bind": vol["bind"]} if "bind" in vol else {})
             } for vol in template["volumes"]
         ]
+
+    if "environment" in template:
+        new_template["env"] = []
+        for item in template["environment"]:
+            env_var = {
+                "name": item["name"]
+            }
+            if "label" in item:
+                env_var["label"] = item["label"]
+            # Optionally add default/preset if desired
+            new_template["env"].append(env_var)
 
     if "environment" in template:
         new_template["env"] = [
